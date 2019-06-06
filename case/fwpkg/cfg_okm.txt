@@ -1,0 +1,34 @@
+//系统设置--OK MIC算法
+CONFIG_OK_MIC_ID_BASE{430}     = 0[0,1];         //标兵配置项
+
+OK_MIC_MICIN_SOURCE            = 0[0,1];         //MIC输入源选择，0表示MIC0，1表示MIC1
+OK_MIC_MICIN_OP_GAIN           = 0[0~15,1];      //mic-in OP 增益，0:26db,1:30db,2:31.5db,3:33db,4:34.5db,5:36db,6:37.5db,7:39db,8:0db,9:1.5db,10:3db,11:4.5db,12:6db,13:7.5db,14:8db,15:9.5db
+OK_MIC_MICIN_ADC_GAIN          = 0[0~15,1];      //mic-in ADC 增益，单位3dB，范围0 ~ 15，表示0dB ~ 45dB
+
+OK_MIC_MIX_MODE_L_CHAN         = 1[0~2,1];       //MIC通道混合到播放通道左声道选项，0表示不影响播放通道左声道，1表示混合到播放通道左声道，2表示替换播放通道左声道
+OK_MIC_MIX_MODE_R_CHAN         = 1[0~2,1];       //MIC通道混合到播放通道右声道选项，0表示不影响播放通道右声道，1表示混合到播放通道右声道，2表示替换播放通道右声道
+OK_MIC_SOFT_VOLUME_GAIN        = -30[-240~0,1];  //MIC通道软音量增益
+
+OK_MIC_PEQ_ENABLE              = 0[0,1];         //MIC通道是否使能PEQ，1表示使能，0表示禁止
+OK_MIC_PEQ_BAND_NUM            = 7[0~14,1];      //MIC通道使用若干个PEQ点，从DAE_PEQ_BANK13_SETTING倒数上去
+
+OK_MIC_LIMITER_ENABLE          = 0[0,1];         //是否打开限幅器，0表示不打开，1表示打开
+                               // threshold, attack_time, release_time, reserve
+                               //[限幅器阈值，单位为0.1DB，范围 -60DB ~ 0DB; 
+                               // 限幅器启动时间，单位为0.01ms，取值范围为 0.02 ~ 10 ms; 
+                               // 限幅器释放时间，单位为1ms，取值范围为 1 ~ 5000 ms]
+OK_MIC_LIMITER_SETTING         = 0[-2, 2, 300];
+
+OK_MIC_ECHO_ENABLE             = 1[0,1];         //是否使能MIC回声效果
+OK_MIC_ECHO_DELAY              = 197[0~210,1];   //MIC回声延时时长，单位1ms
+OK_MIC_ECHO_RATIO_ARRAY        = 64[0,6,12,18,24,28,32,36,40,44,48,52,56,58,60,62,64]; //MIC回声深度调节列表，参数个数最多20个
+OK_MIC_ECHO_LP_BAND0           = 2000;           //回声第一个低通滤波截至频率
+OK_MIC_ECHO_LP_BAND1           = 2000;           //回声第二个低通滤波截至频率
+
+OK_MIC_FREQ_SHIFT_ENABLE       = 0[0,1];         //是否开启消除啸叫算法
+
+OK_MIC_DUCKING_ENABLE          = 1[0,1];         //是否使能闪避效果
+OK_MIC_DUCKING_PARA            = 0[100,100,5000,-240,-240]; //闪避参数：检测时间ms，启动时间ms，释放时间ms，闪避阈值/峰值0.1dB，闪避幅度0.1dB
+
+//以下是播歌通道的配置项
+PLAY_VOICE_REMOVAL_ENABLE      = 1[0,1];         //是否开启人声消除算法

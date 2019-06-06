@@ -1,0 +1,76 @@
+
+//DEBUG配置项
+SETTING_APP_SUPPORT_BTPLAY{200} = 1[0,1];     //是否支持蓝牙播歌，0表示不支持，1表示支持
+SETTING_ONOFF_POWEROFF_MODE = 0[0,1];         //省电关机模式，0表示进入软关机，1表示进入低功耗模式
+SETTING_ONOFF_POWEROFF_IR_WAKEUP = 0[0,1];    //是否支持红外遥控唤醒，仅支持低功耗模式的唤醒，0表示不支持，1表示支持
+SETTING_UART_SIM_KEY_SUPPORT = 0[0,1];        //是否支持UART模拟按键，可以用来做按键自动化测试
+
+SETTING_SOUND_TTS_LANGUAGE = 0[0~1,1];        //TTS播报语音类型，0表示中文，1表示英文
+SETTING_SOUND_TTS_VOLMODE = 0[0,1];           //TTS音量模式，0表示递增到TTS最大音量就不再增加，1表示固定为最大音量
+SETTING_SOUND_TTS_MINVOL = 8[0~31,1];         //TTS最小音量，0表示在音量为0时没有TTS
+SETTING_SOUND_TTS_MAXVOL = 28[0~31,1];        //TTS最大音量
+
+SETTING_SOUND_KEYTONE_VOLMODE = 0[0,1];       //按键音音量模式，0表示递增到TTS最大音量就不再增加，1表示固定为最大音量；NOTE：不能配置为 TTS为固定，而按键音为递增，这种情况按键音会被默认改为固定
+SETTING_SOUND_KEYTONE_MINVOL = 4[0~63,1];     //按键音最小音量
+SETTING_SOUND_KEYTONE_MAXVOL = 11[0~63,1];    //按键音最大音量，声音太大容易产生瞬间大电流
+
+SETTING_SOUND_VOLUME_PHY_LIMIT_TBL = 0[-100,-100,-80,-60,-40,-20,0,0,0,0]; //电池电量较低时最大音量限制，单位0.1db，分别为电量0级 ~ 电量9级对应最大音量限制
+
+SETTING_CARD_CMD_PAD_LEVEL = 1[0~7,1];           //卡cmd线驱动能力设置
+SETTING_CARD_CLK_PAD_LEVEL = 2[0~7,1];           //卡clk线驱动能力设置
+SETTING_CARD_DAT_PAD_LEVEL = 1[0~7,1];           //卡data线驱动能力设置
+SETTING_CARD_SEQUENCE_READ_MODE_SUPPORT = 0[0,1];//是否支持卡连续读，0表示不支持，1表示支持
+
+SETTING_UART_PRINT_ENABLE = 1[0,1];           //Uart打印使能，Uart打印会影响运行性能，产品发布时必须关掉，1表示开发Uart打印，0表示关闭Uart打印
+SETTING_BT_CONTROLLER_PRINT_ENABLE = 0[0,1];  //蓝牙控制器打印使能
+SETTING_BT_ENGINE_PRINT_ENABLE = 1[0,1];      //蓝牙协议栈打印使能
+SETTING_BT_CONTROLLER_DUT_ENABLE = 0[0~3,1];  //蓝牙控制器DUT测试模式，0表示不测试，1表示DUT测试，2表示LE测试，3表示DUT+LE测试
+SETTING_BT_CONTROLLER_CLBRPARA_WRITE = 1[0,1];//蓝牙控制器初始化参数写到VRAM，0表示不写入，每次都初始化，1表示写入，只初始化1次
+
+SETTING_AUTOTEST_IN_CARD_ENABLE = 0[0,1];     //插卡脱机自动化测试开关，0表示关闭，1表示开启
+SETTING_AUTOTEST_ONLY_ONE_CHIP = 1[0,1];      //是否只支持一台设备自动化测试，0表示支持一拖多，1表示只支持一台
+
+SETTING_SYS_RESTART_BREAKPOINT_ENABLE = 1[0,1];  //重启后断点续播开关，0表示关闭，1表示开启
+
+USB_DEVICE_PID = "0xd100";     //USB音箱PID，只能为16进制字符串，三个PID必须都不相同
+INF_DEVICE_PRODUCT_NAME = "USB COMPOSITE";         //USB音箱设备名，最大16字符
+INF_DEVICE_PRODUCER = "Actions Semiconductor";     //最大32字符
+
+BTSTACK_BDADD_GEN_METHOD         = 1[0~1,1]       //设备地址低三位生成方式，0表示由BTSTACK_BDADD_LOW3BYTES指定，1表示随机生成
+BTSTACK_BDADD_LOW3BYTES          = 0x000002;      //设备地址低3字节，只用于发射机
+BTSTACK_FIX_PIN_CODE             = "0000";        //固定PIN CODE，只对BT2.1之前版本有用，BT2.1及后续版本使用SSP
+BTSTACK_LINKKEY_MISS_REJECT      = 0[0,1];        //回连时倘若手机取消配对了，则不弹出提示框并自动停止连接选项，0表示默认行为，1表示不弹出
+BTSTACK_CONNECT_LINK_INFO        = 0[0,1];        //手机第一次发起连接时不弹出配对提示框选项，0表示默认行为，1表示不弹出
+BTSTACK_CAPACITANCE_VALUE_ARRAY  = 1[-2,2,1,-1,-2,1];//当前温度相对常温需补偿电容值表:默认值为1表示温度补偿打开,为0表示温度补偿关闭，[]内数值单位为0.1pF，分别对应-20℃，0℃，20℃，40℃，60℃，75℃
+BTSTACK_RF_TXPOWER_ADJUST        = 7[0~7,1];      //蓝牙RF发射功率，默认为7档
+BTSTACK_SNIFF_ENABLE             = 0[0,1];        //是否使能进入sniff，0表示禁止; 1表示使能
+BTSTACK_SNIFF_INTERVAL_VALUE     = 1[1~2,1];      //蓝牙sniff max interval, 1:500ms;2:1.28s
+BTSTACK_SSP_ENABLE               = 1[0,1];        //蓝牙SSP安全简易配对开关，0表示关闭且需要用户通过手机输入PIN CODE，1表示开启并配置为无输入设备不需要输入PIN CODE
+BTSTACK_BQB_TEST_ENALBE          = 0x0000;        //bit0:test or not; bit1:for delayreporting;
+BTSTACK_SBC_AUDIO_QUALITY        = 0[0,1];        //SBC编码音频质量水平，0表示高质量，蓝牙传输带宽较高，1表示中等质量，蓝牙传输带宽较低
+BTSTACK_SCO_USE_MSBC_FIRST       = 0[0,1];        //SCO是否优先使用MSBC编码，0表示仅使用CVSD，1表示优先使用MSBC
+BTSTACK_SCO_POSTDEAL_ENABLE      = 1[0,1];        //SCO后处理增强音质，0表示关闭，1表示打开
+
+BTMANAGER_ENABLE_A2DP                = 1[0~1,1];  //支持A2DP高级音频分发服务，0-不支持，1-支持
+BTMANAGER_ENABLE_A2DP_CP             = 0[0~2,1];  //支持A2DP内容保护，0-不支持，1-支持DTCP，2-支持SCMS-T
+BTMANAGER_ENABLE_AVDTP_AAC           = 0[0,1];    //是否支持AAC格式蓝牙推歌，0表示不支持，1表示支持
+BTMANAGER_ENABLE_AVRCP               = 1[0,1];    //是否支持AVRCP 遥控服务，0表示不支持，1表示支持
+BTMANAGER_RECONNECT_ANOTHER_TIMES    = 3[0~20,1]; //尝试回连另外一个服务的次数限制，0表示一直连接，1~20表示有限次
+BTMANAGER_AUTO_CONNECT_COUNT_TIMEOUT = 3[0~15,1]; //超时断开后自动回连次数，0表示一直回连，1~15表示有限次
+BTMANAGER_AUTO_CONNECT_COUNT_STARTUP = 3[0~15,1]; //开机后第一次进入自动回连次数，0表示一直回连，1~15表示有限次
+BTMANAGER_AUTO_CONNECT_COUNT_MODE    = 3[0~15,1]; //切MODE键进入蓝牙自动回连次数，0表示一直回连，1~15表示有限次
+BTMANAGER_AUTO_CONNECT_INTERVAL      = 30[1~60,1];//自动回连时间间隔，单位秒
+BTMANAGER_AUTO_CONNECT_SEQUENCE      = 1[0,1];    //主箱回连顺序选择，0表示先连手机，1表示先连组队
+BTMANAGER_ENABLE_TWS_SLAVE_CONNECT_PHONE = 1[0,1];//是否支持副箱连接手机，0表示不支持，1表示支持
+BTMANAGER_TWS_AUTO_CONNECT_COUNT_TIMEOUT = 3[0~15,1]; //tws超时断开后自动回连次数，0表示一直回连，1~15表示有限次
+BTMANAGER_TWS_AUTO_CONNECT_COUNT_STARTUP = 3[0~15,1]; //tws开机后第一次进入自动回连次数，0表示一直回连，1~15表示有限次
+BTMANAGER_TWS_AUTO_CONNECT_COUNT_BEFORE_SEARCH = 2[0~15,1]; //tws按键搜索前回连原设备次数，0表示一直回连，1~15表示有限次
+BTMANAGER_TWS_MASTER_ROLE_DEPENDING_ON_KEY = 1[0,1];//按键是否改变原来的主从关系，如果为0则保持原来的主从关系，如果为1则哪个按键哪个为主
+
+BTPLAY_SBC_PLAY_DELAY_START = 240[50~360,1];      //单箱播歌时，sbc播放起始延时，单位为ms，步进为1ms
+BTPLAY_SBC_PLAY_DELAY_START_TWS = 280[50~360,1];  //TWS播歌时，sbc播放起始延时，单位为ms，步进为1ms
+BTPLAY_LINEIN_PLAY_DELAY_START_TWS = 220[50~280,1];  //LINEIN TWS播歌时，sbc播放起始延时，单位为ms，步进为1ms
+
+BTCALL_IGNORE_UNCALLSCO = 0[0, 1];                //是否过滤非通话状态下的SCO数据
+
+//NOTE : ID 从270开始分配给回声消除算法，该配置项文件的ID不能大于或等于270

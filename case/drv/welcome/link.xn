@@ -1,0 +1,42 @@
+
+/*定义GROUP BANK INDEX 和其他地址变量*/
+INPUT(link_base.xn)
+
+/*drv 代码和数据段链接地址*/
+RCODE_TEXT_ADDR = WELCOME_VA_START;
+RDATA_DATA_ADDR = RDATA_ADDR_BASE + SRAM_WELCOME_DATA_ADDR;
+
+OUTPUT_ARCH(mips)
+
+ENTRY(welcome)
+
+SECTIONS
+{
+    .text RCODE_TEXT_ADDR :
+    {
+        */obj/*.o(.ENTRY)
+        */obj/*.o(.text .rodata)
+        */ar/hal_pmu_power.o(.text.* .rodata .welcome.hal_pmu_onoff_reset_time)
+        */ar/hal_pmu_adc.o(.text.* .rodata)
+        */ar/hal_pad_basic.o(.text.* .rodata)
+        */ar/hal_pad_welcome.o(.text.* .rodata)
+        */ar/hal_usb_device_detect.o(.text.* .rodata)
+    }
+
+    .data RDATA_DATA_ADDR :
+    {
+        _rd_data_start = ABSOLUTE(.); /*NOTE!!不能去掉这一行，否则如果.data段为空，可能会导致.bss段连接地址错误*/
+        */obj/*.o(.data)
+    }
+
+    .bss :
+    {
+        */obj/*.o(.bss)
+        *(.bss)
+        *(.sbss)
+        *(.common)
+        *(common)
+    }
+}
+
+

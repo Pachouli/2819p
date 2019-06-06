@@ -1,0 +1,66 @@
+////281B101
+
+//系统设置--数字音效选项
+DAE_BYPASS_ENABLE{300}         = 1[0,1];         //是否禁用DAE数字音效，0表示不禁用，即开启DAE数字音效，1表示禁用
+DAE_GRAPHICS_EQ_ENABLE         = 0[0,1];         //是否打开图形EQ，即EQ音效，0表示不打开，1表示打开
+DAE_GRAPHICS_EQ_TYPE           = 0[0~7,1];       //图形EQ类型，0-none, 1~7 分别为 JAZZ, POP, CLASSIC, SOFT, DBB, ROCK, USER
+
+DAE_PRECUT_RATIO               = 0[0~600,1];   //预衰减，单位0.1db；预衰减不受BYPASS控制
+
+DAE_PEQ_ENABLE                 = 1[0,1];             //是否打开PEQ算法
+                               // Freq   Q: N/10   Gain: N/10   Type
+                               //[中心频率或截止频率 范围20Hz-20KHz；
+                               // Q值，单位为0.1，范围0.3~30；
+                               // 增益，单位为0.1DB，范围-120 ~ 120；
+                               // 类型 0表示不滤波，1表示peak，2表示high pass，3表示low pass，4表示low shelf，5表示high shelf，其他无效]
+DAE_PEQ_BANK0_SETTING          = 1[31, 7, -10, 2]; //使能高通滤波时gain为-10
+DAE_PEQ_BANK1_SETTING          = 1[50, 4, -10, 2]; //使能高通滤波时gain为-10
+DAE_PEQ_BANK2_SETTING          = 1[80, 10, 30, 1];
+DAE_PEQ_BANK3_SETTING          = 1[125, 10, 28, 1];
+DAE_PEQ_BANK4_SETTING          = 1[250, 10, 15, 1];
+DAE_PEQ_BANK5_SETTING          = 1[500, 7, 30, 1];
+DAE_PEQ_BANK6_SETTING          = 1[1200, 7, -10, 1];
+DAE_PEQ_BANK7_SETTING          = 1[3500, 10, 0, 1];
+DAE_PEQ_BANK8_SETTING          = 1[6000, 7, 30, 1];
+DAE_PEQ_BANK9_SETTING          = 1[8000, 80, -80, 1];
+DAE_PEQ_BANK10_SETTING         = 1[12000, 7, 25, 1];
+DAE_PEQ_BANK11_SETTING         = 1[14000, 10, 0, 1];
+DAE_PEQ_BANK12_SETTING         = 1[16000, 10, 0, 1];
+DAE_PEQ_BANK13_SETTING         = 1[18000, 10, 0, 1];
+
+DAE_LIMITER_ENABLE             = 1[0,1];         //是否打开限幅器，0表示不打开，1表示打开
+                               // threshold, attack_time, release_time, reserve
+                               //[限幅器阈值，单位为0.1DB，范围 -60DB ~ 0DB; 
+                               // 限幅器启动时间，单位为0.01ms，取值范围为 0.02 ~ 100 ms; 
+                               // 限幅器释放时间，单位为1ms，取值范围为 1 ~ 5000 ms]
+DAE_LIMITER_SETTING            = 0[-2, 2, 300];
+
+DAE_DRC_ENABLE                 = 1[0,1];         //是否打开动态范围控制，0表示不打开，1表示打开
+
+DAE_DRC_CROSSOVER              = 150[100~400,5]; //分频点，步进5Hz
+                               //[阈值，单位为0.1DB，范围 -60DB ~ 0DB;
+                               // 检测启动时间，单位为0.01ms，取值范围为 0.02 ~ 100 ms;
+                               // 检测释放时间，单位为1ms，取值范围为 1 ~ 5000 ms;
+                               // 压缩启动时间，单位为0.01ms，取值范围为 0.02 ~ 100 ms;
+                               // 压缩释放时间，单位为1ms，取值范围为 1 ~ 5000 ms;
+                               // 截止频率，单位为1Hz，取值范围为 100Hz ~ 400Hz;
+                               // Q值，单位为0.1，取值范围为 0.3 ~ 1.0 ]
+DAE_DRC_BAND1_SETTING          = 0[-40,200,7,200,500,150,6,1]; //低频段DRC参数
+DAE_DRC_BAND2_SETTING          = 0[-80,400,7,200,500,150,7,2]; //高频段DRC参数
+DAE_DRC_PRE_SOFTVOL_GAIN       = 0[0~200,1]; //灵敏度，单位为0.1dB，取值范围0dB ~ 20dB
+DAE_DRC_POST_SOFTVOL_GAIN      = 35[0~200,1]; //功率增益，单位为0.1dB，取值范围0dB ~ 20dB
+
+DAE_AUX_DRC_CROSSOVER          = 150[100~400,5];
+                               //[阈值，单位为0.1DB，范围 -60DB ~ 0DB;
+                               // 检测启动时间，单位为0.01ms，取值范围为 0.02 ~ 100 ms;
+                               // 检测释放时间，单位为1ms，取值范围为 1 ~ 5000 ms;
+                               // 压缩启动时间，单位为0.01ms，取值范围为 0.02 ~ 100 ms;
+                               // 压缩释放时间，单位为1ms，取值范围为 1 ~ 5000 ms;
+                               // 截止频率，单位为1Hz，取值范围为 100Hz ~ 400Hz;
+                               // Q值，单位为0.1，取值范围为 0.3 ~ 1.0 ]
+DAE_AUX_DRC_BAND1_SETTING      = 0[-80,200,7,200,500,150,6,1]; //低频段DRC参数
+DAE_AUX_DRC_BAND2_SETTING      = 0[-120,400,7,200,500,150,7,2]; //高频段DRC参数
+DAE_AUX_DRC_PRE_SOFTVOL_GAIN   = 0[0~200,1]; //灵敏度，单位为0.1dB，取值范围0dB ~ 20dB
+DAE_AUX_DRC_POST_SOFTVOL_GAIN  = 75[0~200,1]; //功率增益，单位为0.1dB，取值范围0dB ~ 20dB
+
+//NOTE : ID 从350开始分配给通话扩展参数，该配置项文件的ID不能大于或等于350

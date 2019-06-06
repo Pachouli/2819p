@@ -1,0 +1,167 @@
+/**************************************************************************
+*                                                                         *
+*   PROJECT     : MIPS port for UCOS-II                                   *
+*                                                                         *
+*   MODULE      : bank a&b link.xn                                        *
+*                                                                         *
+*   AUTHOR      : wuyueqian                                               *
+*                                                                         *
+*   PROCESSOR   : MIPS 4KEc (32 bit RISC) - Actions board                 *
+*                                                                         *
+*   Tool-chain  : Cygnus                                                  *
+*                                                                         *
+*                                                                         *
+*   Linker script file                                                    *
+*                                                                         *
+**************************************************************************/
+
+/*定义GROUP BANK INDEX 和其他地址变量*/
+INPUT(link_base.xn)
+
+/*ap 代码和数据段链接地址*/
+RCODE_TEXT_ADDR = MMM_MUSCIPLAY_VA_START;
+RDATA_DATA_ADDR = RDATA_ADDR_BASE + SRAM_MUSIC_PLAYER_MMM_DATA_ADDR;
+SRAM_TEXT_ADDR = RCODE_ADDR_BASE + 0x0; /*暂时不需要sram_tex段，需要时先在link_base.xn分配段空间*/
+
+RDATA_PEQ_LRCH_BUFFER_ADDR = RDATA_ADDR_BASE + SRAM_PEQ_LRCH_BUFFER_ADDR;
+RDATA_PEQ_MIC_CH_BUFFER_ADDR = RDATA_ADDR_BASE + SRAM_PEQ_MIC_CH_BUFFER_ADDR;
+
+RDATA_FORMAT_CHECK_TEMP_BUF_ADDR = RDATA_ADDR_BASE + SRAM_MUSIC_PLAYER_FORMAT_CHECK_TEMP_BUF_ADDR;
+
+RDATA_DECODE_OUTPUT_CACHE_ADDR = RDATA_ADDR_BASE + SRAM_MUSIC_PLAYER_OK_MIC_DECODE_OUTPUT_CACHE_ADDR;
+
+RDATA_ECHO_BUF0_ADDR = RDATA_ADDR_BASE + SRAM_MUSIC_PLAYER_ECHO_BUF0_ADDR;
+RDATA_ECHO_BUF1_ADDR = RDATA_ADDR_BASE + SRAM_MUSIC_PLAYER_ECHO_BUF1_ADDR;
+RDATA_ECHO_BUF2_ADDR = RDATA_ADDR_BASE + SRAM_MUSIC_PLAYER_ECHO_BUF2_ADDR;
+RDATA_ECHO_BUF3_ADDR = RDATA_ADDR_BASE + SRAM_MUSIC_PLAYER_ECHO_BUF3_ADDR;
+RDATA_ECHO_BUF4_ADDR = RDATA_ADDR_BASE + SRAM_MUSIC_PLAYER_ECHO_BUF4_ADDR;
+RDATA_FREQ_SHIFT_BUF_ADDR = RDATA_ADDR_BASE + SRAM_MUSIC_PLAYER_FREQ_SHIFT_BUF_ADDR;
+
+DATA_SIZE_RESERVE_4BYTES = SRAM_MUSIC_PLAYER_MMM_DATA_SIZE -4;
+
+RDATA_RESAMPLE_TEMP_BUFF_ADDR = RDATA_ADDR_BASE + SRAM_MUSIC_PLAYER_RESAMPLE_TEMP_BUFF_ADDR;
+RDATA_RESAMPLE_BUF2_ADDR = RDATA_ADDR_BASE + SRAM_MUSIC_PLAYER_RESAMPLE_BUF2_ADDR;
+
+RDATA_OK_MIC_THREAD_STACK_ADDR = RDATA_ADDR_BASE + SRAM_MUSIC_PLAYER_OK_MIC_THREAD_STACK_BOTTOM;
+
+RDATA_KEYTONE_INOUT_BUFF_ADDR = RDATA_ADDR_BASE + SRAM_KEYTONE_INPUT_BUFFER_ADDR;
+
+OUTPUT_ARCH(mips)
+
+ENTRY(mmm_mp_cmd)
+
+SECTIONS
+{
+    /*常驻代码*/
+    .sram_text SRAM_TEXT_ADDR	:
+    {
+    	. = 0x0; /*暂时不需要sram_tex段，需要时先在link_base.xn分配段空间*/
+    }
+
+    .entry RCODE_TEXT_ADDR :
+    {
+    	*/obj/music_player_cmd.o(.rodata.entry)
+    }
+    .text   : 
+    {
+    	*/obj/*.o(.rodata*)
+        */obj/*.o(.text)
+        al_divdi3.o(.text)
+        al_resample.o(.text .MAX_CYCLE_2)
+        al_mix.o(.text .rodata*)
+    }
+    
+    .BSS_PEQ_LRCH_BUFFER RDATA_PEQ_LRCH_BUFFER_ADDR	:
+    {
+    	*/obj/music_player_post_process.o(.bss.audiopp_lrch_buffer)
+    }
+
+    .BSS_PEQ_MIC_CH_BUFFER RDATA_PEQ_MIC_CH_BUFFER_ADDR	:
+    {
+    	*/obj/music_player_post_process.o(.bss.audiopp_mic_ch_buffer)
+    }
+
+    .BSS_DECODE_OUTPUT_CACHE_ADC_CHAN_BUF RDATA_DECODE_OUTPUT_CACHE_ADDR	:
+    {
+    	*/obj/music_player_start.o(.bss.decode_output_cache)
+    	*/obj/music_player_start.o(.bss.pcm_adc_buffer)
+    	*/obj/music_player_start.o(.bss.input_buffer)
+    	*/obj/music_player_start.o(.bss.OK_MIC_TEMP_BUFF)
+    	*/obj/music_player_start.o(.bss.OK_MIC_DECODE_BUFF)
+    }
+
+    .BSS_FORMAT_CHECK_TEMP_BUF_ADDR RDATA_FORMAT_CHECK_TEMP_BUF_ADDR	:
+    {
+    	*/obj/music_player_cmd.o(.bss.FORMAT_CHECK_TEMP_BUF)
+    }
+
+    .BSS_RESAMPLE_TEMP_BUFF RDATA_RESAMPLE_TEMP_BUFF_ADDR :
+    {
+        */obj/music_player_resample_process.o(.bss.RESAMPLE_TEMP_BUFF)
+        . = SRAM_MUSIC_PLAYER_RESAMPLE_TEMP_BUFF_SIZE;
+    }
+    .BSS_RESAMPLE_BUFF2 RDATA_RESAMPLE_BUF2_ADDR :
+    {
+        */obj/music_player_resample_process.o(.bss.RESAMPLE_TABLE_BUFF)
+        */obj/music_player_resample_process.o(.bss.RESAMPLE_INPUT_BUFFER)
+        */obj/music_player_resample_process.o(.bss.RESAMPLE_OUTPUT_BUFFER)
+        . = SRAM_MUSIC_PLAYER_RESAMPLE_BUF2_SIZE;
+    }
+
+    /* 软按键音BUFF */
+    .BSS_KEYTONE_BUFF RDATA_KEYTONE_INOUT_BUFF_ADDR	:
+    {
+    	*/obj/music_player_ktp.o(.bss.keytone_input_buf)
+    	*/obj/music_player_ktp.o(.bss.keytone_output_buf)
+    }
+
+    .BSS_ECHO_BUF0 RDATA_ECHO_BUF0_ADDR	:
+    {
+    	*/obj/music_player_post_process.o(.bss.echo_buf0)
+    }
+    .BSS_ECHO_BUF1 RDATA_ECHO_BUF1_ADDR	:
+    {
+    	*/obj/music_player_post_process.o(.bss.echo_buf1)
+    }
+    .BSS_ECHO_BUF2 RDATA_ECHO_BUF2_ADDR	:
+    {
+    	*/obj/music_player_post_process.o(.bss.echo_buf2)
+    }
+    .BSS_ECHO_BUF3 RDATA_ECHO_BUF3_ADDR	:
+    {
+    	*/obj/music_player_post_process.o(.bss.echo_buf3)
+    }
+    .BSS_ECHO_BUF4 RDATA_ECHO_BUF4_ADDR	:
+    {
+    	*/obj/music_player_post_process.o(.bss.echo_buf4)
+    }
+    .BSS_FREQ_SHIFT_BUF RDATA_FREQ_SHIFT_BUF_ADDR	:
+    {
+    	*/obj/music_player_post_process.o(.bss.freq_shift_buf)
+    }
+
+    /* 初始化了的全局数据段*/
+    .data RDATA_DATA_ADDR   :  
+    {
+        _rd_data_start = ABSOLUTE(.); /*NOTE!!不能去掉这一行，否则如果.data段为空，可能会导致.bss段连接地址错误*/
+        */obj/*.o(.data) 
+    }
+    .bss :
+    {
+        */obj/*.o(.bss*)
+        . = DATA_SIZE_RESERVE_4BYTES - AP_BACK_HIGH_STK_SIZE - SIZEOF(.data);
+    }
+    .bss.ap_high_stack_ptos  AP_BACK_HIGH_STK_POS :
+    {
+        */obj/music_player_start.o(.stack.ap_high_stack_ptos)
+         . = AP_BACK_HIGH_STK_SIZE;
+    }
+    _AP_HIGH_STK_SIZE = SIZEOF(.bss.ap_high_stack_ptos);
+
+    .bss.ok_mic_stack_ptos  RDATA_OK_MIC_THREAD_STACK_ADDR :
+    {
+        */obj/music_player_start.o(.stack.ok_mic_stack_ptos)
+         . = SRAM_MUSIC_PLAYER_OK_MIC_THREAD_STACK_SIZE;
+    }
+    _OK_MIC_STK_SIZE = SIZEOF(.bss.ok_mic_stack_ptos);
+}

@@ -1,0 +1,28 @@
+
+//蓝牙打电话--AEC算法
+BTCALL_MICIN_OP_GAIN{270}       = 5[0~7,1];       //mic-in OP 增益，0:26db,1:30db,2:31.5db,3:33db,4:34.5db,5:36db,6:37.5db,7:39db
+BTCALL_MICIN_ADC_GAIN           = 0[0~15,1];      //打电话 ADC 增益，单位3dB，范围0 ~ 15，表示0dB ~ 45dB
+BTCALL_SPEAKER_VOLUME_GAIN      = -70[-90~0,1];   //打电话音量增益，单位为0.1db，打电话场景声音大小一般会比主音量小一些
+BTCALL_SPEAKER_CHANNEL_ENABLE   = 3[1~3,1];       //打电话时喇叭声道使能，1：右声道，2：左声道，3：双声道；（双声道可能会导致回声消除效果变差）
+BTCALL_SPEAKER_CHANNEL_WEAK_SEL = 0[0~2,1];       //通话时喇叭声音衰减选择，0表示不衰减，1表示右声道衰减，2表示左声道衰减
+BTCALL_SPEAKER_CHANNEL_WEAK_VAL = 0[0~18,1];      //通话时喇叭声音衰减程度，0~18db
+BTCALL_AEC_MODULE_ENABLE        = 1[0,1];         //回声消除模块总开关，1：打开，0：关闭
+BTCALL_AEC_NLP_ENABLE           = 1[0,1];         //非线性处理子模块开关，1：打开，0：关闭
+BTCALL_AEC_NLP_AGGRESSIVENESS   = 10[0~15,1];     //非线性处理程度，整数0~15,越大代表非线性处理越厉害
+BTCALL_AEC_DT_THRESHOLD         = 10[0~15,1];     //双讲近端语音保留程度，整数0~15，越大表示双讲是近端语音保留越多，但是可能会带来单讲的回声，需找个折中值。
+BTCALL_AEC_AES_ENABLE           = 1[0,1];         //残留回声抑制子模块开关，1：打开，0：关闭
+BTCALL_AEC_ECHO_SUPPRESS        = 40[0~40,1];     //回声抑制子模块单讲回声抑制比，单位dB， 0~40
+BTCALL_AEC_ECHO_SUPPRESS_ACTIVE = 40[0~40,1];     //回声抑制子模块双讲回声抑制比，单位dB， 0~40
+BTCALL_AEC_ANS_ENABLE           = 1[0,1];         //降噪开关，1：打开，0：关闭
+BTCALL_AEC_NOISE_SUPPRESS       = 25[0~25,1];     //噪声抑制比，单位dB， 0~25
+BTCALL_AEC_CNG_ENABLE           = 1[0,1];         //舒适噪声开关，1：打开，0：关闭
+BTCALL_AEC_NOISE_FLOOR          = -55[-60~-40,1]; //舒适噪声水平，单位 dB Fs，一般应小于-40 dB；
+BTCALL_AEC_TAIL_LENGTH          = 96[32~96,32];   //回声尾长，单位ms，尾长越长效果越好，但是运算量会增多和空间会加大
+BTCALL_AEC_HALF_FULL_MODE       = 0[0,1];         //单双工模式选择，0表示全双工，1表示半双工
+BTCALL_AGC_PRETREAT_ENABLE      = 1[0,1];         //预处理AGC使能:预处理自动增益控制使能，用于放大对方的声音，1：打开，0：关闭
+BTCALL_AGC_PRETREAT_LEVEL       = 10[0~15,1];     //预处理AGC目标值:预处理自动增益控制目标值，默认设置为10=-20db。
+BTCALL_AGC_POSTREAT_ENABLE      = 1[0,1];         //后端AGC使能:后端自动增益控制使能，用于放大自己的声音，1：打开，0：关闭
+BTCALL_AGC_POSTREAT_LEVEL       = 10[0~15,1];     //后端AGC目标值:后端自动增益控制目标值，默认设置为10=-20db。
+BTCALL_PLC_ENABLE               = 1[0,1];         //丢包补偿模块开关，1：打开，0：关闭
+
+//NOTE : ID 从300开始分配给数字音效，该配置项文件的ID不能大于或等于300

@@ -1,0 +1,47 @@
+
+INPUT(link_base.xn)
+
+RCODE_TEXT_ADDR = AP_MUSIC_VA_START;
+RDATA_DATA_ADDR = RDATA_ADDR_BASE + SRAM_AP_FRONT_CTL_DATA_ADDR;
+SRAM_TEXT_ADDR = RCODE_ADDR_BASE + 0x0; /*暂时不需要sram_tex段，需要时先在link_base.xn分配段空间*/
+
+DATA_SIZE_RESERVE_4BYTES = 0x1fc;
+OUTPUT_ARCH(mips)
+
+ENTRY(__start)
+
+
+SECTIONS
+{
+    .sram_text SRAM_TEXT_ADDR	:
+    {
+    	. = 0x0; /*暂时不需要sram_tex段，需要时先在link_base.xn分配段空间*/
+    }
+
+    .text RCODE_TEXT_ADDR   :
+    {
+        /*4.填写rcode输入节*/
+        ctor.o(.text .rodata)  
+        */obj/*.o(.text .rodata)
+    }
+
+    /* 初始化了的全局数据段，紧跟在 .text段后面: .data */
+    .data RDATA_DATA_ADDR   :
+    {
+        _rd_data_start = ABSOLUTE(.); /*NOTE!!不能去掉这一行，否则如果.data段为空，可能会导致.bss段连接地址错误*/
+        */obj/*.o(.data)
+    }
+
+    .bss :
+    {
+        */obj/*.o(.bss)
+
+        _rd_data_end = ABSOLUTE(.);
+        
+        . = DATA_SIZE_RESERVE_4BYTES - SIZEOF(.data);
+    }
+    .bss.stack_ptos AP_FRONT_LOW_STK_POS : 
+    {
+        _rd_stack_ptos = ABSOLUTE(.);
+    }
+}

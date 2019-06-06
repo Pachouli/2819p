@@ -1,0 +1,172 @@
+
+INPUT(link_base.xn)
+
+RCODE_TEXT_ADDR = AP_BT_ENGINE_VA_START;
+
+BT_SRAM_TEXT_ADDR = RCODE_ADDR_BASE + SRAM_BT_ENGINE_RCODE_ADDR;
+
+SRAM_BT_ENGINE_DATA_ADDR = RDATA_ADDR_BASE + SRAM_BT_ENGINE_DATA_2ND_ADDR;
+SRAM_BT_ENGINE_DATA_SIZE_RESERVE_4BYTES = SRAM_BT_ENGINE_DATA_2ND_SIZE - SRAM_BT_ENGINE_STACK_SIZE - 4;
+
+SRAM_BTCONTROLLER_HIGH_STK_POS_LOW = AP_BTCONTROLLER_HIGH_STK_POS - AP_BTCONTROLLER_HIGH_STK_SIZE;
+SRAM_BTCONTROLLER_LOW_STK_POS_LOW = AP_BTCONTROLLER_LOW_STK_POS - AP_BTCONTROLLER_LOW_STK_SIZE;
+
+RDATA_A2DP_SBC_DIRECT_INPUT_BUFFER_ADDR = RDATA_ADDR_BASE + SRAM_A2DP_SBC_DIRECT_INPUT_BUFFER_ADDR;
+RDATA_A2DP_SBC_INPUT_BUFFER_ADDRESS_ADDR = RDATA_ADDR_BASE + SRAM_A2DP_SBC_INPUT_BUFFER_ADDRESS_ADDR;
+RDATA_A2DP_M2S_AVDTP_CACHE_ADDR = RDATA_ADDR_BASE + SRAM_A2DP_M2S_AVDTP_CACHE_ADDR;
+RDATA_A2DP_M2S_AVDTP_PACKET_ADDR = RDATA_ADDR_BASE + SRAM_A2DP_M2S_AVDTP_PACKET_ADDR;
+
+RDATA_LINEIN_SBC_INPUT_BUFFER_ADDRESS_ADDR = RCODE_ADDR_BASE + SRAM_LINEIN_SBC_INPUT_BUFFER_ADDRESS_ADDR;
+
+RDATA_A2DP_BT_HEAP_ADDR = RDATA_ADDR_BASE + SRAM_BT_ENGINE_HEAP_ADDR;
+
+RDATA_HFP_SCO_ERR_REPORT_BUF_ADDR = RCODE_ADDR_BASE + SRAM_HFP_SCO_ERR_REPORT_BUF_ADDR;
+RDATA_HFP_SCO_OUTPUT_CACHE_ADDR = RCODE_ADDR_BASE + SRAM_HFP_SCO_OUTPUT_CACHE_ADDR;
+RDATA_HFP_SCO_RECEIVE_CACHE_ADDR = RCODE_ADDR_BASE + SRAM_HFP_SCO_RECEIVE_CACHE_ADDR;
+
+OUTPUT_ARCH(mips)
+
+ENTRY(__start)
+
+
+SECTIONS
+{
+    /* RAM代码，目前是存放bt engine中断代码*/
+    .sram_text BT_SRAM_TEXT_ADDR :
+    {
+        *.o(.rcode)
+    }
+
+    .text RCODE_TEXT_ADDR   :
+    {
+
+        /*4.填写rcode输入节*/
+        ctor.o(.text)
+        bt_engine_rcode.o(.text .text.* .rodata)
+        bt_engine_device_control.o(.text .text.*)
+        bt_engine_gap_link.o(.text .text.* .rodata)
+        bt_engine_main.o(.text .text.* .rodata)
+        bt_engine_lib_init.o(.text .text.* .rodata)
+        bt_engine_lib_execute.o(.text .text.*)
+        bt_engine_message_handle.o(.text .text.* .rodata)
+        bt_engine_message_handle_bqb.o(.text .text.* .rodata)
+        bt_engine_message_loop.o(.text .text.*)
+        bt_engine_hfp_sco_connect.o(.text .text.* .rodata)
+        bt_engine_hfp.o(.text .text.* .rodata .rodata.*)
+        bt_engine_hfp_app_deal.o(.text .text.* .rodata .rodata.*)
+        bt_engine_hfp_sco_deal.o(.text .text.* .rodata)
+        bt_engine_hfp_read_phone_clock.o(.text .text.* .rodata)
+        bt_engine_a2dp.o(.rodata .text .text.*)
+        bt_engine_a2dp_app_deal.o(.rodata .rodata.* .text .text.*)
+        bt_engine_avrcp.o(.text .text.*)
+        bt_engine_avrcp_app_deal.o(.rodata .rodata.* .text .text.*)
+        bt_engine_battery_report.o(.text .text.*)
+        bt_engine_autotest_deal.o(.text .text.* .rodata)
+        bt_engine_print.o(.text .text.* .rodata)
+        bt_controller_loop.o(.text .text.*)
+        bt_engine_hid.o(.text .text.* .rodata)
+        bt_engine_hid_app_deal.o(.rodata .rodata.* .text .text.*)
+        bt_engine_vram_info.o(.text .text.* .rodata)
+        bt_engine_autoconnect.o(.text .text.* .rodata)
+        bt_engine_tws_init.o(.text .text.* .rodata)
+        bt_engine_tws_dev_manager.o(.text .text.* .rodata)
+        bt_engine_tws_stream_manager.o(.text .text.* .rodata)
+        bt_engine_tws_avdtp_stream_data.o(.text .text.* .rodata)
+        bt_engine_tws_cmd_manager.o(.text .text.* .rodata)
+        bt_engine_sco_unit_test.o(.text .text.* .rodata)
+        bt_engine_a2dp_unit_test.o(.text .text.* .rodata)
+        bt_engine_freq_offset_config.o(.text .text.* .rodata)
+        bt_engine_dbg.o(.text .text.* .rodata)
+        bt_engine_spp.o(.text .text.* .rodata)
+        bt_engine_linein_tws.o(.text .text.* .rodata)
+        bt_engine_remote_dev_info.o(.text .text.* .rodata)
+        *.o(.text .text.* .rodata .rodata.*)
+        /*bt_engine_ajust_frequency_offset.o(.text .text.* .rodata)*/
+    }
+
+    .bss_1 RDATA_A2DP_SBC_DIRECT_INPUT_BUFFER_ADDR	:
+    {
+    	bt_engine_global_var.o(.bss.a2dp_input_frame_buf)
+    }
+    .bss_2 RDATA_A2DP_SBC_INPUT_BUFFER_ADDRESS_ADDR	:
+    {
+    	bt_engine_global_var.o(.bss.a2dp_input_cache)
+    }
+    .bss_3 RDATA_A2DP_M2S_AVDTP_CACHE_ADDR	:
+    {
+    	bt_engine_tws_global_var.o(.bss.tws_avdtp_cache)
+    }
+    .bss_4 RDATA_A2DP_M2S_AVDTP_PACKET_ADDR	:
+    {
+    	bt_engine_tws_global_var.o(.bss.tws_avdtp_packet)
+    }
+
+    .bss_5 RDATA_HFP_SCO_ERR_REPORT_BUF_ADDR	:
+    {
+    	bt_engine_global_var.o(.bss.hfp_sco_err_report_buf)
+    }
+    .bss_6 RDATA_HFP_SCO_OUTPUT_CACHE_ADDR	:
+    {
+    	bt_engine_global_var.o(.bss.hfp_sco_output_cache)
+    }
+    .bss_7 RDATA_HFP_SCO_RECEIVE_CACHE_ADDR	:
+    {
+    	bt_engine_global_var.o(.bss.hfp_sco_receive_cache)
+    }
+
+    .bss_8 RDATA_A2DP_BT_HEAP_ADDR	:
+    {
+    	bt_engine_global_var.o(.bss.bt_heap)
+    }
+
+    .bss_9 RDATA_LINEIN_SBC_INPUT_BUFFER_ADDRESS_ADDR	:
+    {
+    	bt_engine_global_var.o(.bss.linein_input_cache)
+    }
+
+    /* 初始化了的全局数据段，紧跟在 .text段后面: .data */
+    .data SRAM_BT_ENGINE_DATA_ADDR   :
+    {
+        _rd_data_start = ABSOLUTE(.);/*bt engine数据空间和栈是分开的，必须确保_rd_data_start和_rd_data_end一致才不会导致栈大小计算错误*/
+        _rd_data_end = ABSOLUTE(.);/*bt engine数据空间和栈是分开的，必须确保_rd_data_start和_rd_data_end一致才不会导致栈大小计算错误*/
+        bt_engine_main.o(.data)
+        bt_engine_gap_link.o(.data)
+        bt_engine_global_var.o(.data)
+        bt_engine_hfp.o(.data)
+        bt_engine_message_handle.o(.data)
+        bt_engine_autoconnect.o(.data)
+        bt_engine_tws_global_var.o(.data)
+        bt_engine_freq_offset_config.o(.data)
+        *.o(.data)
+    }
+
+    .bss :
+    {
+        bt_engine_main.o(.bss)
+        bt_engine_global_var.o(.bss)
+        bt_engine_autoconnect.o(.bss)
+        bt_engine_tws_global_var.o(.bss)
+        bt_engine_freq_offset_config.o(.bss)
+        *.o(.bss)
+        _rd_data_end = SRAM_BT_ENGINE_DATA_ADDR + SRAM_BT_ENGINE_DATA_SIZE_RESERVE_4BYTES;/*ABSOLUTE(.);*/
+        . = SRAM_BT_ENGINE_DATA_SIZE_RESERVE_4BYTES - SIZEOF(.data);
+    }
+    
+    .bss.stack_ptos AP_BTENGINE_STK_POS_2ND : 
+    {
+        _rd_stack_ptos = ABSOLUTE(.);
+    }
+    
+    .bss.ap_bt_con_high_stack_ptos  SRAM_BTCONTROLLER_HIGH_STK_POS_LOW :
+    {
+        bt_engine_device_control.o(.stack.ap_bt_con_high_stack_ptos)
+        . = AP_BTCONTROLLER_HIGH_STK_SIZE;
+    }
+    .bss.ap_bt_con_low_stack_ptos  SRAM_BTCONTROLLER_LOW_STK_POS_LOW :
+    {
+        bt_engine_device_control.o(.stack.ap_bt_con_low_stack_ptos)
+        . = AP_BTCONTROLLER_LOW_STK_SIZE;
+    }
+    _BT_HIGH_STK_SIZE = SIZEOF(.bss.ap_bt_con_high_stack_ptos);
+    _BT_LOW_STK_SIZE = SIZEOF(.bss.ap_bt_con_low_stack_ptos);
+}

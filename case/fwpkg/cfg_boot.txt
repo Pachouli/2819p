@@ -1,0 +1,20 @@
+
+//这里的每个配置项ID都不允许修改，所以要添加配置项只能往后添加
+
+//测试和调试选项
+SETTING_SYS_DEBUG_MODE_ENABLE{0} = 0[0,1];      //是否启动开看门狗 0 开启看门狗 1不开启看门狗
+SETTING_SYS_RESET_AFTER_PRODUCT{1} = 4[0~6,1];  //量产结束重启时间,0表示不重启 1:352ms 2:703ms 3:1.4s 4:2.8s 5:5.6s 6:11.2s
+SETTING_SYS_EMI_REDUCTION_ENABLE{2} = 1[0,1];   //是否降低EMI 0 不关心EMI 1 降低EMI
+SETTING_SYS_ADCKEY_ADFU_ENABLE{3} = 1[0~3,1];   //是否开机时检测到ADC按键进入ADFU升级模式 1 使能ADFU 2 强制使能读卡器模式 3 使能ADFU且强制使能读卡器模式 0 禁止
+SETTING_SYS_ADCKEY_RES_ENABLE{4} = 0[0,1];      //按键上拉电阻选择，0表示使用外部上拉电阻，1表示使用LRADC1内置100K欧姆上拉电阻
+SETTING_SYS_ADCKEY_BOOT_FUNC{5} = 1[0~2,1];     //启动阶段LRADC1检测到为0时的功能0:不做任何特殊操作，1:进入ADFU 2：进入卡量产
+SETTING_SYS_TIMER1_PERIOD_LEVEL{6} = 0[0~5,1];  //系统TIMER1中断周期，0表示10ms，1表示1ms，2表示500us，3表示200us，4表示100us，5表示50us
+SETTING_SYS_SPI_NOR_CLK_CONFIG{7} = 0[0,1];     //系统SPI NOR常规工作频率，0表示48MHz，1表示26MHz，调整为26MHz时需要加大系统运行频率
+SETTING_SYS_SPI_NOR_ID_CONFIG{8} = 0[0~9,0];    //SPI NOR ID, 0表示自动匹配，其他值表示无法自动匹配的SPI NOR，具体如下：
+                                                //ID=1 : W25Q128FV (NOR ID与某款普通SPI NOR一样，但是支持写保护有问题，需特殊处理)
+SETTING_SYS_CAPACITOR_SELECT{9} = 8[6~10,1];    //IC内部频偏校准电容选择，6:1.2pF,7:1.4pF,8:1.6pF,9:1.8pF,10:2.0pF
+SETTING_SYS_VCC_VOLTAGE_SELECT{10} = 0[0,1];    //VCC电压选择，0:3.1V,对应AVCC 2.95V；1:3.4V,对应AVCC 3.1V
+SETTING_SYS_LIBC_MALLOC_ADDR{11} = 0x1f000;     //系统堆空间起始物理地址 I2STX 24bit会占用0x1f000，需要配置为其他空间
+SETTING_SYS_LIBC_MALLOC_SIZE{12} = 0x1000;      //系统堆空间大小，单位字节
+
+//NOTE : ID 从16开始分配给 config.txt 中的配置项，所以这里的配置项ID不能超过15

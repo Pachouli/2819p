@@ -1,0 +1,203 @@
+//-*- coding: UTF8 -*- 用来指示以什么编码打包字符串内容，从[ANSI, UTF8, UTF-16, UTF-16BE]中选择一种；如果去掉就默认以ANSI编码打包字符串内容；
+//-*- config: cfg_boot.txt;config.txt;cfg_dbg.txt;cfg_aec.txt;cfg_dae.txt;cfg_ae2.txt;cfg_drcv.txt;cfg_okm.txt;cfg_geq.txt -*- 配置文件排列顺序
+//工厂固件信息
+CONFIG_TXT_ID_BASE{16} = 0[0,1];                                       //标兵配置项，仅仅是为了保留配置项ID为16，不能修改ID，不能在前面插入配置项！！！！
+FACTORY_FW_INFO_SOLUTION_PROVIDER = "炬芯（珠海）科技有限公司";        //最长不能超过30个汉字，或90个英文字符
+FACTORY_FW_INFO_MANUFACTURER      = "蓝牙音箱制造商";                  //最长不能超过30个汉字，或90个英文字符
+FACTORY_FW_INFO_VERSION_NUMBER    = "V1.2.0";                          //最长不能超过90个英文字符
+FACTORY_FW_INFO_MODIFY_DATE       = "2018-10-01";                      //最长不能超过90个英文字符
+FACTORY_FW_INFO_MODIFY_DESC       = "1.V1.2版本正式发布;";             //最长不能超过200个汉字，或600个英文字符，各修改点以;分割，工具会以此分行显示
+
+
+//系统配置--应用选项
+SETTING_APP_SUPPORT_CARDPLAY{26} = 1[0,1];    //是否支持卡播放功能，0表示不支持，1表示支持
+SETTING_APP_SUPPORT_LINEIN = 1[0,1];          //是否支持linein播放功能，0表示不支持，1表示支持
+SETTING_APP_SUPPORT_FMRADIO = 1[0,1];         //是否支持FM收音机，0表示不支持，1表示支持
+SETTING_APP_SUPPORT_BTCALL = 1[0,1];          //是否支持蓝牙免提，0表示不支持，1表示支持
+SETTING_APP_SUPPORT_UHOSTPLAY = 1[0,1];       //是否支持U盘播放功能，0表示不支持，1表示支持
+SETTING_APP_SUPPORT_MDISKPLAY = 0[0,1];       //是否支持内置磁盘播放功能，0表示不支持，1表示支持
+SETTING_APP_SUPPORT_USBBOX = 1[0,1];          //是否支持USB音箱，0表示不支持，1表示支持
+SETTING_APP_SUPPORT_USBMSC = 1[0,1];          //是否支持大容量磁盘功能，0表示不支持，1表示支持
+SETTING_APP_SUPPORT_TAKEPHOTO = 0[0,1];       //是否支持拍照模式，0表示不支持，1表示支持
+SETTING_APP_SUPPORT_BT_INBACK = 1[0,1];       //是否支持后台蓝牙，0表示不支持，1表示支持
+SETTING_APP_SWITCH_SEQUENCE = 0[0,5,1,16,2,21,26,3,4]; //应用切换顺序，0蓝牙播歌,1播卡,2 linein,3 fm radio,4 usb audio,5插U,16内置磁盘,21 SPDIF,23 HDMI,26 ARC；默认值表示开机默认进入的应用，数值意义参见case_type.h中的宏定义 APP_FUNC_XXX
+SETTING_HARDWARE_SUPPORT_CARD = 1[0,1];       //硬件是否支持卡，0表示不支持，1表示支持
+SETTING_HARDWARE_SUPPORT_IPHONE_CHARGE = 0[0,1]; //硬件是否支持USB口给IPhone充电，如果支持则不能支持USB读卡器和USB音箱，0表示不支持，1表示支持
+SETTING_APP_SUPPORT_CHARGE_LOOP = 1[0,1];     //是否支持空闲充电模式，0表示不支持，1表示支持
+
+//系统设置/用户交互--开关机选项
+SETTING_ONOFF_POWEROFF_ENABLE = 0[0,1];                //是否打开省电关机，0表示关闭，1表示打开
+SETTING_ONOFF_POWEROFF_TIMER = 1[1~120,1];             //省电关机时间，以分钟为单位；
+SETTING_ONOFF_POWEROFF_BT_WAITPAIR_TIMER = 5[1~120,1]; //蓝牙等待连接省电关机时间，以分钟为单位；
+SETTING_ONOFF_POWEROFF_TWS_PR_MODE = 0[0,1];           //TWS按键关机模式，0表示对箱关机，1表示单箱关机，哪个音箱按键关机就关哪个音箱
+
+//系统设置/用户交互--输入选项
+//SETTING_INPUT_KEY_ARRAY = 1[14,15,7,5,6,3,2,9];           //EVB按键：默认值表示ONOFF PIN的键值 play, [next&vol+/prev&vol-/mode/vol+/vol-/next/prev/Repeat], 详见 key_msg_value.h 定义
+//SETTING_INPUT_KEY_ADC_ARRAY = 0[7,20,30,42,58,72,66,98];  //EVB按键：next&vol+/prev&vol-/mode/vol+/vol-/next/prev/Repeat
+//SETTING_INPUT_KEY_ARRAY = 1[3,2,7,9,5,6];              //DVB按键：默认值表示ONOFF PIN的键值 play, [next/prev/mode/Repeat/vol+/vol-], 详见 key_msg_value.h 定义
+//SETTING_INPUT_KEY_ADC_ARRAY = 0[7,20,32,44,58,72];     //DVB按键：next/prev/mode/Repeat/vol+/vol-
+//SETTING_INPUT_KEY_ARRAY = 1[7,9,8,2,3,5,6];            //NEW A DVB 7按键：默认值表示ONOFF PIN的键值 play, [mode/F1/connect/prev/next/vol+/vol-], 详见 key_msg_value.h 定义
+//SETTING_INPUT_KEY_ADC_ARRAY = 0[7,18,30,41,58,76,100]; //NEW A DVB 7按键：mode/F1/connect/prev/next/vol+/vol-
+//SETTING_INPUT_KEY_ARRAY = 1[7,9,8,15,14];              //NEW A DVB 5按键：默认值表示ONOFF PIN的键值 play, [mode/F1/connect/prev_vol-/next_vol+], 详见 key_msg_value.h 定义
+//SETTING_INPUT_KEY_ADC_ARRAY = 0[7,18,30,41,58];        //NEW A DVB 5按键：mode/F1/connect/prev_vol-/next_vol+
+SETTING_INPUT_KEY_ARRAY = 1[64,7,9,8,2,3,6,5];              //NEW B DVB 7按键：默认值表示ONOFF PIN的键值 play, [adfu/mode/F1/connect/prev/next/vol-/vol+], 详见 key_msg_value.h 定义
+SETTING_INPUT_KEY_ADC_ARRAY = 0[15,50,130,230,320,450,600,800]; //NEW B DVB 7按键：adfu/mode/F1/connect/prev/next/vol-/vol+
+//SETTING_INPUT_KEY_ADC_ARRAY = 0[52,136,240,336,475,630,840]; //VCC 3.4V NEW B DVB 7按键：mode/F1/connect/prev/next/vol-/vol+
+//SETTING_INPUT_KEY_ARRAY = 1[7,9,8,15,14];              //NEW B DVB 5按键：默认值表示ONOFF PIN的键值 play, [mode/F1/connect/prev_vol-/next_vol+], 详见 key_msg_value.h 定义
+//SETTING_INPUT_KEY_ADC_ARRAY = 0[7,18,30,41,58];        //NEW B DVB 5按键：mode/F1/connect/prev_vol-/next_vol+
+
+SETTING_IR_KEY_ENABLE = 1[0,1];                          //是否支持IR遥控，0表示不支持，1表示支持
+SETTING_IR_KEY_PROTOCOL = 1[0~3,1];                      //IR遥控协议，0表示Toshiba 9012，1表示NEC，2表示RC5，3表示RC6
+//SETTING_IR_KEY_USERCODE = 0xff00;                        //IR遥控用户码
+//SETTING_IR_KEY_ARRAY = 0[7,9,8,2,3,5,6,1,26,27,16,17,18,19,20,21,22,23,24,25];  //DVB IR按键：[mode/F1/connect/prev/next/vol+/vol-/play/ch+/ch-/0~9], 详见 key_msg_value.h 定义
+//SETTING_IR_KEY_KEY_CODE_ARRAY = 0[69,71,13,7,9,64,25,21,67,68,22,12,24,94,8,28,90,66,82,74]; //DVB IR NEC KEY CODE
+SETTING_IR_KEY_USERCODE = 0xff40;                        //IR遥控用户码
+SETTING_IR_KEY_ARRAY = 0[7,9,8,2,3,5,6,1,26,27,16,17,18,19,20,21,22,23,24,25];  //DVB IR按键：[mode/F1/connect/prev/next/vol+/vol-/play/ch+/ch-/0~9], 详见 key_msg_value.h 定义
+SETTING_IR_KEY_KEY_CODE_ARRAY = 0[69,243,66,16,17,21,28,13,11,14,0,1,2,3,4,5,6,7,8,9]; //DVB IR NEC KEY CODE
+
+//系统设置/用户交互--音频输出
+SETTING_HARDWARE_AUDIO_OUTPUT_MODE = 0[0~2,1];    //音频输出模式选择，0表示仅PA输出，1表示仅I2STX输出，2表示PA和I2STX同时输出
+SETTING_HARDWARE_AUDIO_OUTPUT_PA_SWING = 0[0,1];  //音频输出摆幅选择，0表示高摆幅，1表示低摆幅
+SETTING_HARDWARE_AUDIO_OUTPUT_CHANNEL = 0[0~4,1]; //音频输出通道选择，0表示双声道输出，1表示混合后仅左声道输出，2表示混合后仅右声道输出，3表示混合后双声道输出，4表示左右声道互换双声道输出
+SETTING_HARDWARE_EXTERN_PA_MUTE_ENABLE = 0[0,1];  //暂停播放时功放静音使能，0表示不使能，1表示使能
+SETTING_HARDWARE_EARPHONE_ENABLE = 0[0,1];        //是否使用耳机输出，使用耳机输出开启PA时需要给PA充电耗时较长，关闭PA时需要给PA放电耗时也较长，0表示不使用，1表示使用
+SETTING_HARDWARE_EARPHONE_DDV_ENABLE = 0[0,1];    //是否使用耳机直驱，0表示非直驱，1表示直驱
+
+//系统设置/用户交互--TTS
+SETTING_SOUND_ENABLE_TTS = 1[0,1];            //状态语音播报选项，0表示关闭，1表示开启
+SETTING_SOUND_ENABLE_CONTROL_TTS = 0[0,1];    //状态语音播报是否打开控制类TTS，包括上一曲/下一曲/暂停/播放等，0表示关闭，1表示打开
+
+//系统设置/用户交互--按键音
+SETTING_SOUND_ENABLE_KEYTONE = 0[0,1];        //按键音开关，0表示禁止，1表示使能
+SETTING_SOUND_SOFT_KEYTONE_MAX_VOLUME = -60[-120~0,10]; //软按键音最大音量，单位0.1dB
+
+//系统设置--LED数码管选项
+SETTING_DISPLAY_SUPPORT_LED_SEGMENT = 1[0,1];//是否支持数码管显示 0 不支持 1支持
+SETTING_DISPLAY_LED_SEGMENT_LIGHT_ENABLE = 0[0,1];//是否支持空闲时关闭数码管 0 不支持 1支持
+SETTING_DISPLAY_LED_SEGMENT_LIGHT_TIMER = 30[10~120,10];//关闭数码管显示时间--单位1秒
+
+//系统设置--LED灯选项
+SETTING_DISPLAY_SUPPORT_LED = 0[0,1];//是否支持数码管显示 0 不支持 1支持
+
+//系统设置--声音选项
+SETTING_SOUND_DEFAULT_MAIN_VOLUME = 18[0~31,1];  //升级后首次开机默认主音量，或者也可以作为每次开机的重置主音量
+SETTING_SOUND_DEFAULT_CALL_VOLUME = 10[0~15,1];  //升级后首次开机默认打电话音量，或者也可以作为每次开机的重置打电话音量
+SETTING_SOUND_VOLUME_RESET_POWERON = 1[0,1];     //开机音量重置到默认值选项，0表示不重置，1表示要重置
+SETTING_SOUND_MIN_VOLUME_POWERON = 1[0~31,1];    //开机最小音量，避免开机听不到任何声音
+SETTING_SOUND_MAX_VOLUME_POWERON = 31[0~31,1];   //开机最大音量，避免开机声音太大
+SETTING_SOUND_MAIN_VOLUME_GAIN = 0[-90~30,1];    //主音量增益，单位为0.1db，为负表示需要将输出功率调低，为正表示需要将输出功率调高，但是失真度会加大
+SETTING_SOUND_VOLUME_PHY_LIMIT_GRADE = 0[0~4,1]; //电量较低时音量限制级别，0表示不限制; 音量限制表音量单位 0.1db, 分别对应电量0 ~ 电量9
+                                                 //1表示轻度限制，适合电池容量较大且有DCDC的方案，音量限制表 [-50,-50,-30,-20,-10,0,0,0,0,0]
+                                                 //2表示适度限制，适合电池容量适中且有DCDC的方案，音量限制表 [-80,-80,-60,-40,-25,-10,0,0,0,0]
+                                                 //3表示重度限制，适合电池容量较小且无DCDC的方案，音量限制表 [-100,-100,-80,-60,-40,-20,0,0,0,0]
+                                                 //4表示自定义，由 SETTING_SOUND_VOLUME_PHY_LIMIT_TBL 定义
+
+//系统设置--闹钟选项
+SETTING_TIMEALARM_SNOOZE_ENABLE = 1[0,1];        //是否支持贪睡功能，0表示不支持，1表示支持
+SETTING_TIMEALARM_SNOOZE_TIMER = 10[1~30,1];     //贪睡时间，单位为分钟，0表示不支持贪睡
+SETTING_TIMEALARM_SNOOZE_MAX_TIMES = 3[1~10,1];  //贪睡最多次数
+SETTING_TIMEALARM_ALARM_OVERTIME = 5[1~30,1];    //闹钟超时时间，单位为分钟
+SETTING_TIMEALARM_ALARM_OVERTIME_DEAL = 0[0,1];  //闹钟超时未操作处理选项，0表示关闭闹钟，1表示自动选择贪睡
+SETTING_TIMEALARM_DEFAULT_VOLUME = 20[5~31,1];   //闹钟默认音量
+SETTING_TIMEALARM_TIME_AMPM_ENABLE = 0[0,1];     //时间显示方式，0表示24小时制，1表示12小时制
+
+
+//record ap参数
+RECORD_GAIN_MIC_INPUT{90} = 5[0~7,1];   //录音mic-in OP 增益:0:26db,1:30db,2:31.5db,3:33db,4:34.5db,5:36db,6:37.5db,7:39db
+RECORD_GAIN_MIC_ADC = 0[0~15,1];        //录音mic-in ADC 增益，单位3dB，范围0 ~ 15，表示0dB ~ 45dB
+RECORD_MONITOR_ENABLE = 1[0,1];         //是否打开录音监听，0表示不打开，1表示打开
+RECORD_SAMPLE_RATE = 7[0~8,1];          //录音采样率:0:8KHz,1:11KHz,2:12KHz,3:16KHz,4:22KHz,5:24KHz,6:32KHz,7:44KHz 8:48KHz 单位为KHz
+RECORD_SCAN_MAX_SPACE = 5[0~8,1];       //录音扫描磁盘空闲空间:0-全盘扫描;1-32M;2-64M;3-128M;4-256M;5-512M;6-1024M(1G);7-1536M(1.5G);8-2048M(2G)
+
+
+//music ap参数
+MUSIC_REPLAY_BY_PREV_KEY{100} = 1[0,1];  //当歌曲播放超过5秒钟后，按PREV键是否回到开头重播，0表示切换到上一曲，1表示重播
+MUSIC_ENABLE_SEQ_NUM_TTS = 0[0,1];      //是否开启曲目号TTS播报，0表示关闭，1表示开启
+
+
+//linein ap参数
+LINEIN_GAIN_INPUT{105} = 2[0~7,1];       //line-in OP 增益，0:-12db，1:-3db，2:0db，3:1.5db，4:3db，5:4.5db，6:6db，7:7.5db
+LINEIN_GAIN_ADC = 0[0~15,1];             //line-in ADC 增益，单位3dB，范围0 ~ 15，表示0dB ~ 45dB
+LINEIN_VOLUME_GAIN = 0[-90~30,1];       //line-in 音量增益，单位为0.1db，为负表示需要将输出功率调低，为正表示需要将输出功率调高，但是失真度会加大
+LINEIN_CHANNEL_SEL = 0[0,1];	        //line-in 通道选择 0:数字通道 1:模拟通道
+LINEIN_INPUT_PIN_USE = 0[0~8,1];        //line-in 输入引脚使用 0:0表示AUXL0和AUXR0立体声输入，1表示AUXL1和AUXR1立体声输入，2表示AUXL0和AUXL1混合输入，
+                                        //3表示AUXR0和AUXR1混合输入，4表示AUXL0和AUXR0混合输入，5表示IC外混合后AUXL0输入，
+                                        //6表示IC外混合后AUXR0输入，7表示IC外混合后AUXL1输入，8表示IC外混合后AUXR1输入
+LINEIN_LOWENERGY_POWEROFF_ENABLE = 0[0,1]; //LINEIN低能量省电关机开关，0表示关闭，1表示开启
+LINEIN_ENABLE_TWS_MODE = 1[0,1];        //LINEIN TWS模式使能，0表示禁止，1表示使能
+
+
+//radio ap参数
+RADIO_AP_BAND_SEL{115} = 0[0,1,2];      //电台波段选择，0表示中国/美国波段，1表示日本波段，2表示欧洲波段
+RADIO_SEEK_THRESHOLD = 7;               //搜台门限值，各FM模组的门限值定义不一致，请根据datasheet设置
+RADIO_SEEK_AUDITION_ENABLE = 1[0,1];    //自动搜台试听开关，0表示关闭，1表示开启
+RADIO_SEEK_AUDITION_TIME = 2[1~10,1];   //自动搜台试听时长，单位1S
+RADIO_GAIN_INPUT = 5[0~7,1];            //Fm OP 增益，0:-12db，1:-3db，2:0db，3:1.5db，4:3db，5:4.5db，6:6db，7:7.5db
+RADIO_GAIN_ADC = 2[0~15,1];             //Fm ADC 增益，单位3dB，范围0 ~ 15，表示0dB ~ 45dB
+RADIO_CLK_SRC_SEL = 0[0,1];             //Fm 时钟源选择，0表示片内时钟源，1表示外部时钟源
+RADIO_CLK_VAL_SEL = 4[0~4,1];           //Fm 时钟频率选择，0表示32K，1表示6.5M（暂不可用），2表示13M（暂不可用），3表示24M，4表示26M
+RADIO_ENABLE_FREQ_TTS = 1[0,1];         //是否开启频点TTS播报，0表示关闭，1表示开启
+RADIO_VOLUME_GAIN = 0[-90~30,1];        //Fm 收音机音量增益，单位为0.1db，为负表示需要将输出功率调低，为正表示需要将输出功率调高，但是失真度会加大
+RADIO_INPUT_PIN_USE = 1[0~8,1];         //fm radio 输入引脚使用 0:0表示AUXL0和AUXR0立体声输入，1表示AUXL1和AUXR1立体声输入，2表示AUXL0和AUXL1混合输入，
+                                        //3表示AUXR0和AUXR1混合输入，4表示AUXL0和AUXR0混合输入，5表示IC外混合后AUXL0输入，
+                                        //6表示IC外混合后AUXR0输入，7表示IC外混合后AUXL1输入，8表示IC外混合后AUXR1输入
+
+
+
+//usb cardreader
+USB_VID{130} = "0x10D6";       //只能为16进制字符串
+INF_USB_VENDOR = "ACTIONS";    //最大8字符
+USB_CARDREADER_PID = "0x1101"; //读卡器PID，只能为16进制字符串，三个PID必须都不相同
+INF_UDISK_LABEL_ENABLE = 0[0,1];                   //是否使能进入U盘模式配置卷标
+INF_UDISK_LABEL = "USB DISK AA";                   //最大11字符
+INF_CARDREADER_PRODUCT_NAME = "USB CARDREADER";    //读卡器设备名，最大16字符
+INF_INQUIRY_INFORMATION_FOB = "ACTIONS USB DISK FOB 2.00"; //最大58个字符
+
+
+//usb audio
+USB_SOUND_PID{140} = "0xdd00";     //USB声卡PID，只能为16进制字符串，三个PID必须都不相同
+INF_SOUND_PRODUCT_NAME  = "USB AUDIO";             //USB声卡设备名，最大16字符
+INF_VOLUME_FLAG = 3[1~3,1];    //usb音箱音量调节，1小机可调，2PC可调，3小机PC均可调且PC优先
+USB_SOUND_AUTO_PLAY_ENABLE = 0[0,1];//是否开启自动播放功能，0表示关闭，1表示开启
+PHONE_CHARGING_CURRENT = 0[0,1];//0:表示iphone充电电流最大值为600mA  1:表示充电电流最大值为1A；
+
+
+//蓝牙协议栈
+BTSTACK_DEVICE_NAME{145}         = "AUDIO_US281B";//经典蓝牙设备名称，最大29字节
+BTSTACK_BDADD_HIGH3BYTES         = 0xF44EFD;      //设备地址高3字节，低3字节一般在量产时决定
+BTSTACK_CLASS_OF_DEVICE          = 0x240404;      //高字节表示major service，中字节表示major device，低字节表示minor device
+BTSTACK_DEVICE_NAME_HID          = "US281B_HID";  //经典蓝牙设备名称，最大29字节
+BTSTACK_CLASS_OF_DEVICE_HID      = 0x240540;      //COD for HID for IPhone
+BTSTACK_BLE_LOCAL_NAME           = "BLE_US281B"; //低功耗蓝牙设备名称，最大29字节
+BTSTACK_BLE_MANUFACTURE_ID       = 0x1006; //低功耗蓝牙设备名称，最大29字节
+
+//蓝牙管理器
+BTMANAGER_ENABLE_AVRCP_VOLUME_SYNC{155} = 0[0,1]; //是否支持AVRCP音量同步服务，0表示不支持，1表示支持
+BTMANAGER_ENABLE_HFP                 = 1[0,1];    //是否支持HFP服务，0表示不支持，1表示支持
+BTMANAGER_ENABLE_HFP_VOLUME_SYNC     = 1[0,1];    //是否支持HFP音量同步服务，0表示不支持，1表示支持
+BTMANAGER_ENABLE_HFP_BAT_REPORT      = 1[0,1];    //是否支持HFP电量上报服务，0表示不支持，1表示支持
+BTMANAGER_SUPPORT_THREE_WAY_CALL     = 1[0,1];    //是否支持HFP三方通话，0表示不支持，1表示支持
+BTMANAGER_ENABLE_HID                 = 0[0,1];    //是否支持HID服务，0表示不支持，1表示支持
+BTMANAGER_ENABLE_AUTO_CONNECT        = 1[0,1];    //支持自动回连功能:0-不支持,1-支持
+BTMANAGER_MAX_PAIRED_LIST_MEMBER     = 8[1~8,1];  //最多保存几台设备连接信息
+BTMANAGER_ENABLE_TWS                 = 0[0,1];    //是否支持TWS对箱，0表示不支持，1表示支持
+BTMANAGER_VISUAL_MODE                = 0[0~2,1];  //0表示可见可连接，1表示配对后不可见可连接，2表示任何时候都不可见不可连接
+BTMANAGER_ENABLE_SPP                 = 0[0,1];    //是否支持SPP服务，0表示不支持，1表示支持
+BTMANAGER_ENABLE_BLE                 = 0[0,1];    //是否支持BLE服务，0表示不支持，1表示支持
+BTMANAGER_BLE_PASSTH_PROFILE_SUPPORT    = 1[0,1];    //是否支持Action 自定义透传Profile
+BTMANAGER_ACTION_PROFILE_SRV_UUID          = "0000FFC0-0000-1000-8000-00805F9B34FB";//ACTIONS passthrough profile server 128bits uuid
+BTMANAGER_ACTION_PROFILE_SET_CHAR_UUID     = "0000FFC2-0000-1000-8000-00805F9B34FB";//ACTIONS passthrough profile set char 128bits uuid
+BTMANAGER_ACTION_PROFILE_GET_CHAR_UUID     = "0000FFC1-0000-1000-8000-00805F9B34FB";//ACTIONS passthrough profile getchar 128bits uuid
+
+//蓝牙推歌 {170}
+
+//蓝牙打电话
+BTCALL_FRONT_CHF_CAG_EXCH_ENABLE{175} = 1[0,1];   //支持切换音箱和手机通话:0-不支持,1-支持,按NEXT/PREV键进行切换
+BTCALL_CALLIN_HINT_MODE = 2[0~2,1];               //来电提示模式，0表示仅铃声，1表示仅电话本播报，2表示铃声+电话本播报
+BTCALL_CALLIN_PB_SPACE_TIME = 5[1~30,1];          //电话本播报间隔时长:以1s为单位，播完电话本后等待该时长后再循环播放
+BTCALL_CALLIN_RING_SPACE_TIME = 5[1~60,1];        //内置来电铃声间隔时长:以100ms为单位，播完内置来电铃声后等待该时长后再循环播放
+
+//自定义配置项 185 ~ 199 共15个配置项
+CFG_XXX{185} = 1[0,1];                            //自定义配置项
+
+//NOTE : ID 从200开始分配给DEBUG配置项，该配置项文件的ID不能大于或等于200

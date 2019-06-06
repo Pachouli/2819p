@@ -1,0 +1,136 @@
+/**************************************************************************
+*                                                                         *
+*   PROJECT     : MIPS port for UCOS-II                                   *
+*                                                                         *
+*   MODULE      : bank a&b link.xn                                        *
+*                                                                         *
+*   AUTHOR      : wuyueqian                                               *
+*                                                                         *
+*   PROCESSOR   : MIPS 4KEc (32 bit RISC) - Actions board                 *
+*                                                                         *
+*   Tool-chain  : Cygnus                                                  *
+*                                                                         *
+*   Note        :                                                         *
+*                                                                         *
+*                                                                         *
+*   Linker script file                                                    *
+*                                                                         *
+**************************************************************************/
+
+/*定义GROUP BANK INDEX 和其他地址变量*/
+INPUT(link_base.xn)
+
+/*drv 代码和数据段链接地址*/
+DRV_ENTRY_ADDR = HAL_ENTRY_VA_START;
+
+RCODE_TEXT_ADDR = DRV_HAL_VA_START;
+RDATA_DATA_ADDR = RDATA_ADDR_BASE + SRAM_HAL_DATA_ADDR;
+SRAM_TEXT_ADDR = RCODE_ADDR_BASE + SRAM_HAL_DRV_RCODE_ADDR;
+
+RCODE_SRAM_TEXT1_ADDR = RCODE_ADDR_BASE + SRAM_HAL_DRV_SRAM_TEXT_1_ADDR;
+
+DATA_SIZE_RESERVE_4BYTES = SRAM_HAL_DATA_SIZE - 4;
+
+OUTPUT_ARCH(mips)
+
+ENTRY(hal_op)
+
+SECTIONS
+{
+    .sram_text SRAM_TEXT_ADDR	:
+    {
+    	KEEP(./obj/hal_interface.o(.ram_op))
+    	./ar/hal_clear_watch_dog.o(.text.hal_clear_watch_dog)
+    	./ar/hal_pmu_adc.o(.text.hal_pmu_read_lradc_inner)
+    	./ar/hal_pmu_adc.o(.text.hal_pmu_read_batadc_inner)
+    	./ar/hal_pmu_adc.o(.text.hal_pmu_read_onoff_key_inner)
+    	./ar/hal_pad_basic.o(.rcode)
+    	. = SRAM_HAL_DRV_RCODE_SIZE;
+    }
+
+    .sram_text1 RCODE_SRAM_TEXT1_ADDR	:
+    {
+    	./ar/hal_pmu_power_s2.o(.text* .rodata*)
+    	./ar/hal_intc_s2.o(.text* .rodata*)
+    }
+
+    .entry DRV_ENTRY_ADDR :
+    {
+        KEEP(./obj/hal_interface.o(.rodata))
+    }
+
+    .text RCODE_TEXT_ADDR :
+    {
+        KEEP(./obj/hal_interface.o(.text))
+        */obj/*.o(.text .rodata .rcode)
+        ./ar/hal_pcmbuf.o(.text.hal_audio_get_pcmbuf_length)
+        ./ar/hal_uart.o(.text.* .rodata)
+        ./ar/hal_twi_slave.o(.text.* .rodata)
+        ./ar/hal_twi_master.o(.text.* .rodata)
+        ./ar/hal_twi_master_sim.o(.text.* .rodata)
+        ./ar/hal_pwm.o(.text.* .rodata)
+        ./ar/hal_sirq.o(.text.* .rodata)
+        ./ar/hal_pmu_power.o(.text.* .rodata)
+        ./ar/hal_pmu_adc.o(.text.* .rodata)
+        ./ar/hal_cmu.o(.text.* .rodata)
+        ./ar/hal_volume.o(.text.* .rodata)
+        ./ar/hal_pcmbuf.o(.text.* .rodata)
+        ./ar/hal_pa.o(.text.* .rodata)
+        ./ar/hal_keytone.o(.text.* .rodata)
+        ./ar/hal_dac.o(.text.* .rodata)
+        ./ar/hal_adc.o(.text.* .rodata)
+        ./ar/hal_i2srx.o(.text.* .rodata)
+        ./ar/hal_audio_phy_init.o(.text.* .rodata)
+        ./ar/hal_pad_basic.o(.text.* .rodata)
+        ./ar/hal_pad.o(.text.* .rodata)
+        ./ar/hal_pad_if.o(.text.* .rodata)
+        ./ar/hal_intc.o(.text.* .rodata)
+        ./ar/hal_usb_device_detect.o(.text.* .rodata)
+        ./ar/hal_usb_phy_init_common.o(.text.* .rodata)
+        ./ar/hal_usb_phy_init.o(.text.* .rodata)
+        ./ar/hal_usb_ep_common.o(.text.* .rodata)
+        ./ar/hal_usb_ep.o(.text.* .rodata)
+        ./ar/hal_usb_isr.o(.text.* .rodata)
+        ./ar/hal_timer_rtc.o(.text.* .rodata)
+        ./ar/hal_clear_watch_dog.o(.text.* .rodata)
+        ./ar/hal_debug.o(.text.* .rodata)
+        ./ar/hal_sdmmc_common.o(.text.* .rodata)
+        ./ar/hal_sdmmc_phy_init.o(.text.* .rodata)
+        ./ar/hal_sdmmc_device_detect.o(.text.* .rodata)
+        ./ar/hal_uhost_phy_init.o(.text.* .rodata)
+        ./ar/hal_uhost_device_detect.o(.text.* .rodata)
+        ./ar/hal_host_control_transfer.o(.text.* .rodata)
+        ./ar/hal_uhost_bulk_transfer.o(.text.* .rodata)
+        ./ar/hal_led.o(.text.* .rodata)
+        ./ar/hal_irc.o(.text.* .rodata)
+        ./ar/hal_spi1.o(.text.* .rodata)
+        ./ar/hal_spi1_nor.o(.text.* .rodata)
+        ./ar/hal_hdmi.o(.text.* .rodata)
+        ./ar/hal_pad_if_for_hdmi.o(.text.* .rodata)
+        usb_hardware.a(.text .rodata)
+        card_hardware.a(.text .rodata)
+        uhost_hardware.a(.text .rodata)
+    }
+
+    .data RDATA_DATA_ADDR :
+    {
+        _rd_data_start = ABSOLUTE(.); /*NOTE!!不能去掉这一行，否则如果.data段为空，可能会导致.bss段连接地址错误*/
+        */obj/*.o(.data)
+        usb_hardware.a(.data)
+        card_hardware.a(.data)
+        uhost_hardware.a(.data)
+    }
+
+    .bss    :
+    {
+        */obj/*.o(.bss)
+        usb_hardware.a(.bss)  
+        card_hardware.a(.bss)
+        uhost_hardware.a(.bss)
+        *(.bss)
+        *(.sbss)
+        *(.common)
+        *(common)
+        . = DATA_SIZE_RESERVE_4BYTES - SIZEOF(.data);
+    }
+}

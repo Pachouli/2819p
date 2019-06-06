@@ -1,0 +1,22 @@
+
+//系统设置--数字音效选项图形EQ
+                               // Freq   Q: N/10   Gain: N/10   Type
+                               //[中心频率或截止频率 范围20Hz-20KHz；
+                               // Q值，单位为0.1，范围0.3~30；
+                               // 增益，单位为0.1DB，范围-120 ~ 120；
+                               // 类型 0表示不滤波，1表示peak，2表示high pass，3表示low pass，4表示low shelf，5表示high shelf，其他无效]
+//DBB EQ曲线
+DAE_GEQ1_BANK0_SETTING{500}    = 1[31, 7, -10, 2]; //使能高通滤波时gain为-10
+DAE_GEQ1_BANK1_SETTING         = 1[50, 4, -10, 2]; //使能高通滤波时gain为-10
+DAE_GEQ1_BANK2_SETTING         = 1[80, 10, 30, 1];
+DAE_GEQ1_BANK3_SETTING         = 1[125, 7, 40, 1];
+DAE_GEQ1_BANK4_SETTING         = 1[250, 10, 30, 1];
+DAE_GEQ1_BANK5_SETTING         = 1[500,   10, 0, 1];
+DAE_GEQ1_BANK6_SETTING         = 1[1200,  10, 0, 1];
+DAE_GEQ1_BANK7_SETTING         = 1[3500,  10, 0, 1];
+DAE_GEQ1_BANK8_SETTING         = 1[6000,  10, 0, 1];
+DAE_GEQ1_BANK9_SETTING         = 1[8000,  10, 0, 1];
+DAE_GEQ1_BANK10_SETTING        = 1[12000, 10, 0, 1];
+DAE_GEQ1_BANK11_SETTING        = 1[14000, 10, 0, 1];
+DAE_GEQ1_BANK12_SETTING        = 1[16000, 10, 0, 1];
+DAE_GEQ1_BANK13_SETTING        = 1[18000, 10, 0, 1];

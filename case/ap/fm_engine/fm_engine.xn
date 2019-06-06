@@ -1,0 +1,52 @@
+
+/*定义GROUP BANK INDEX 和其他地址变量*/
+INPUT(link_base.xn)
+
+/*ap 代码和数据段链接地址*/
+RCODE_TEXT_ADDR = AP_FM_ENGINE_VA_START;
+RDATA_DATA_ADDR = RDATA_ADDR_BASE + SRAM_BACK_ENGINE_DATA_ADDR;
+SRAM_TEXT_ADDR = RCODE_ADDR_BASE + 0x0; /*暂时不需要sram_tex段，需要时先在link_base.xn分配段空间*/
+
+DATA_SIZE_RESERVE_4BYTES = 0xf8;
+OUTPUT_ARCH(mips)
+
+ENTRY(__start)
+
+SECTIONS
+{
+    .sram_text SRAM_TEXT_ADDR	:
+    {
+    	. = 0x0; /*暂时不需要sram_tex段，需要时先在link_base.xn分配段空间*/
+    }
+
+    .text RCODE_TEXT_ADDR	: 
+    { 
+        ctor.o(.text .rodata)  
+        */obj/*.o(.text .rodata)
+    }
+    
+    /* 初始化了的全局数据段，紧跟在 .text段后面: .data */
+    .data RDATA_DATA_ADDR	: 
+    {
+        _rd_data_start = ABSOLUTE(.); /*NOTE!!不能去掉这一行，否则如果.data段为空，可能会导致.bss段连接地址错误*/
+    	*/obj/*.o(.data)
+    }
+    /* 未初始化的全局数据段，系统不会进行清零，由应用开发者自己把握: .bss, .sbss .common common */
+    .bss :
+    {
+        
+    	*/obj/*.o(.bss)
+        *(.sbss)
+        *(.common)/*小普通符号*/
+        *(common)/*标准普通符号*/
+
+        _rd_data_end = ABSOLUTE(.);
+        
+        . = DATA_SIZE_RESERVE_4BYTES - SIZEOF(.data);
+    } 
+    
+    .bss.stack_ptos AP_BACK_LOW_STK_POS : 
+    {
+        _rd_stack_ptos = ABSOLUTE(.);
+    }
+}

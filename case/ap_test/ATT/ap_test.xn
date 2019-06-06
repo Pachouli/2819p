@@ -1,0 +1,209 @@
+/**************************************************************************
+*                                                                         *
+*   PROJECT     : MIPS port for UCOS-II                                   *
+*                                                                         *
+*   MODULE      : bank a&b link.xn                                        *
+*                                                                         *
+*   AUTHOR      : wuyueqian                                               *
+*                                                                         *
+*   PROCESSOR   : MIPS 4KEc (32 bit RISC) - Actions board                 *
+*                                                                         *
+*   Tool-chain  : Cygnus                                                  *
+*                                                                         *
+*                                                                         *
+*   Linker script file                                                    *
+*                                                                         *
+**************************************************************************/
+
+
+/*定义GROUP BANK INDEX 和其他地址变量*/
+INPUT(link_base.xn)
+
+
+
+RCODE_TEXT_ADDR = AP_BT_FRONT_VA_START;
+RDATA_DATA_ADDR = RDATA_ADDR_BASE + SRAM_AP_FRONT_CTL_DATA_ADDR;
+
+RDATA_LOG_FILE_BUFFER_ADDR = RDATA_ADDR_BASE + SRAM_ATT_LOG_FILE_BUFFER_ADDR;
+RDATA_CFG_FILE_BUFFER_ADDR = RDATA_ADDR_BASE + SRAM_ATT_CFG_FILE_BUFFER_ADDR;
+
+/* 
+    RCODE_BANK_XXX_ADDR: BANK代码中符号的链接地址
+    RDATA_BANK_XXX_ADDR: BANK代码的存储地址
+    以上两个地址映射的物理地址是一样的，只是用于区分缓冲数据和代码
+
+    LADDR_BANK_XXX_ADDR: BANK代码的加载地址，不同overlay的加载地址保持一定的空间间隔，否则因为加载内存空间冲突而导致链接不通过
+*/
+RDATA_BANK_RESIDENT_ADDR = RDATA_ADDR_BASE    + SRAM_ATT_BANK_RESIDENT_CODE_ADDR;
+RCODE_BANK_RESIDENT_ADDR = RCODE_ADDR_BASE    + SRAM_ATT_BANK_RESIDENT_CODE_ADDR;
+LADDR_BANK_RESIDENT_ADDR = 0x00010000;
+
+RDATA_BANK_BASE_FUNC_ADDR = RDATA_ADDR_BASE   + SRAM_ATT_BANK_BASE_FUNC_CODE_ADDR;
+RCODE_BANK_BASE_FUNC_ADDR = RCODE_ADDR_BASE   + SRAM_ATT_BANK_BASE_FUNC_CODE_ADDR;
+LADDR_BANK_BASE_FUNC_ADDR = 0x00020000;
+
+RDATA_BANK_TEST_ITEM_ADDR = RDATA_ADDR_BASE   + SRAM_ATT_BANK_TEST_ITEM_CODE_ADDR;
+RCODE_BANK_TEST_ITEM_ADDR = RCODE_ADDR_BASE   + SRAM_ATT_BANK_TEST_ITEM_CODE_ADDR;
+LADDR_BANK_TEST_ITEM_ADDR = 0x00030000;
+
+RDATA_BANK_TEST_ITEM_EXT_ADDR = RDATA_ADDR_BASE   + SRAM_ATT_BANK_TEST_ITEM_EXT_CODE_ADDR;
+RCODE_BANK_TEST_ITEM_EXT_ADDR = RCODE_ADDR_BASE   + SRAM_ATT_BANK_TEST_ITEM_EXT_CODE_ADDR;
+LADDR_BANK_TEST_ITEM_EXT_ADDR = 0x00040000;
+
+OUTPUT_ARCH(mips)
+
+
+ENTRY(__start)
+SECTIONS
+{   
+    /* 常驻bank区 */
+    .bank_resident RCODE_BANK_RESIDENT_ADDR : AT(LADDR_BANK_RESIDENT_ADDR)
+    {          
+        */obj/ap_autotest_resident_entry.o(.op_entry)
+        */obj/ap_autotest_record_file.o(.rodata .text .data .bss)
+        */obj/ap_autotest_bank_load.o(.rodata .text .data .bss)
+        */obj/ap_autotest_fsm.o(.rodata .text .data .bss)
+        . = SRAM_ATT_BANK_RESIDENT_CODE_LEN;
+    }
+
+    
+    /* 基础功能 overlay 区 */
+    OVERLAY RCODE_BANK_BASE_FUNC_ADDR : NOCROSSREFS AT(LADDR_BANK_BASE_FUNC_ADDR)
+    {
+        .bank_common
+        {   
+            */obj/ap_autotest_common_entry.o(.op_entry)
+            */obj/ap_autotest_bt_info_proc.o(.rodata .text .data .bss)
+            */obj/ap_autotest_engine_proc.o(.rodata .text .data .bss)
+            */obj/ap_autotest_log_file.o(.rodata .text .data .bss)
+            */obj/ap_autotest_printk.o(.rodata .text .data .bss)
+            */obj/ap_autotest_start_deal.o(.rodata .text .data .bss)
+            */obj/ap_autotest_test_id_map.o(.rodata .text .data .bss)
+            */obj/ap_autotest_test_report.o(.rodata .text .data .bss)
+            . = SRAM_ATT_BANK_BASE_FUNC_CODE_LEN;
+        }
+        .bank_args_read
+        {   
+            */obj/ap_autotest_args_read_entry.o(.op_entry)
+            */obj/ap_autotest_args_read.o(.rodata .text .data .bss)
+            . = SRAM_ATT_BANK_BASE_FUNC_CODE_LEN;
+        }
+    }
+
+    OVERLAY RCODE_BANK_TEST_ITEM_ADDR : NOCROSSREFS AT(LADDR_BANK_TEST_ITEM_ADDR)
+    {
+        .bank_bt_attr_modify
+        {   
+            */obj/ap_autotest_bt_attr_modify_entry.o(.op_entry)
+            */obj/ap_autotest_bt_attr_modify.o(.rodata .text .data .bss)
+            . = SRAM_ATT_BANK_TEST_ITEM_CODE_LEN;
+        }
+        .bank_bt_attr_read
+        {
+            */obj/ap_autotest_bt_attr_read_entry.o(.op_entry)
+            */obj/ap_autotest_bt_attr_read.o(.rodata .text .data .bss)
+            . = SRAM_ATT_BANK_TEST_ITEM_CODE_LEN;
+        }
+        .bank_bt_test
+        {
+            */obj/ap_autotest_bt_test_entry.o(.op_entry)
+            */obj/ap_autotest_bt_test.o(.rodata .text .data .bss)
+            . = SRAM_ATT_BANK_TEST_ITEM_CODE_LEN;
+        }
+        .bank_fm
+        {
+            */obj/ap_autotest_fm_entry.o(.op_entry)
+            */obj/ap_autotest_fm_test.o(.rodata .text .data .bss)
+            . = SRAM_ATT_BANK_TEST_ITEM_CODE_LEN;
+        }
+        .bank_linein
+        {
+            */obj/ap_autotest_linein_entry.o(.op_entry)
+            */obj/ap_autotest_linein_test.o(.rodata .text .data .bss)
+            . = SRAM_ATT_BANK_TEST_ITEM_CODE_LEN;
+        }
+        .bank_music
+        {
+            */obj/ap_autotest_music_entry.o(.op_entry)
+            */obj/ap_autotest_music_test.o(.rodata .text .data .bss)
+            . = SRAM_ATT_BANK_TEST_ITEM_CODE_LEN;
+        }
+    }
+
+    OVERLAY RCODE_BANK_TEST_ITEM_EXT_ADDR : NOCROSSREFS AT(LADDR_BANK_TEST_ITEM_EXT_ADDR)
+    {
+        .bank_gpio
+        {
+            */obj/ap_autotest_gpio_entry.o(.op_entry)
+            */obj/ap_autotest_gpio.o(.rodata .text .data .bss)
+            . = SRAM_ATT_BANK_TEST_ITEM_EXT_CODE_LEN;
+        }
+        .bank_channel
+        {
+            */obj/ap_autotest_channel_entry.o(.op_entry)
+            */obj/ap_autotest_channel_test.o(.rodata .text .data .bss)
+            */obj/ap_autotest_channel_test_SNR.o(.rodata .text .data .bss)
+            */obj/ap_autotest_channel_test_SNR_data.o(.rodata .text .data .bss)
+            . = SRAM_ATT_BANK_TEST_ITEM_EXT_CODE_LEN;
+        }
+    }
+
+    .text RCODE_TEXT_ADDR   :
+    {
+        /*填写rcode输入节*/
+        */obj/ap_autotest_main_entry.o(.op_entry)
+        ctor.o(.text .rodata)
+        */obj/*.o(.text .rodata)
+    }
+
+    .bss_2 RDATA_LOG_FILE_BUFFER_ADDR	:
+    {
+    	*/obj/ap_autotest_main.o(.bss.log_file_buffer)
+    }
+    .bss_3 RDATA_CFG_FILE_BUFFER_ADDR	:
+    {
+    	*/obj/ap_autotest_main.o(.bss.att_cfg_file_buf)
+    }
+    .bss_4 RDATA_BANK_RESIDENT_ADDR :
+    {
+        */obj/ap_autotest_main.o(.bss.bank_resident_buffer)
+    }
+    .bss_5 RDATA_BANK_BASE_FUNC_ADDR :
+    {
+        */obj/ap_autotest_main.o(.bss.bank_base_func_buffer)
+    }
+    .bss_6 RDATA_BANK_TEST_ITEM_ADDR :
+    {
+        */obj/ap_autotest_main.o(.bss.bank_test_item_buffer)
+    }
+    .bss_7 RDATA_BANK_TEST_ITEM_EXT_ADDR :
+    {
+        */obj/ap_autotest_main.o(.bss.bank_test_item_ext_buffer)
+    }
+
+
+    /* 初始化了的全局数据段，紧跟在 .text段后面: .data */
+    .data RDATA_DATA_ADDR   :
+    {
+        _rd_data_start = ABSOLUTE(.);
+        /*填写rdata输入节，所以文件产生的.data都被链接到这里*/
+        */obj/*.o(.data)
+    }
+
+    /* 未初始化的全局数据段，系统会进行清零 */
+    .bss :
+    {
+
+        */obj/*.o(.bss)
+        *(.sbss)
+        *(.common)/*小普通符号*/
+        *(common)/*标准普通符号*/
+
+        _rd_data_end = ABSOLUTE(.);
+    }
+    
+    .bss.stack_ptos AP_FRONT_LOW_STK_POS : 
+    {
+        _rd_stack_ptos = ABSOLUTE(.);
+    }
+}

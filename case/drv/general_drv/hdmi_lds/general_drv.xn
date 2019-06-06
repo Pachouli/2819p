@@ -1,0 +1,76 @@
+
+/*定义GROUP BANK INDEX 和其他地址变量*/
+INPUT(link_base.xn)
+
+/*drv 代码和数据段链接地址*/
+ENTRY_ADDR = DRV_KEY_ENTRY_START;
+RDATA_DATA_ADDR = RDATA_ADDR_BASE + SRAM_KEY_DRV_DATA_ADDR;
+SRAM_TEXT_ADDR = RCODE_ADDR_BASE + 0x0; /*暂时不需要sram_tex段，需要时先在link_base.xn分配段空间*/
+
+RDATA_LCD_CACHE_ADDR = RDATA_ADDR_BASE + SRAM_LCD_DRV_DATA_ADDR;
+
+DATA_SIZE_RESERVE_4BYTES = SRAM_KEY_DRV_DATA_SIZE - 4;
+OUTPUT_ARCH(mips)
+
+ENTRY(key_op)
+
+SECTIONS
+{
+    .sram_text SRAM_TEXT_ADDR	:
+    {
+    	. = 0x0; /*暂时不需要sram_tex段，需要时先在link_base.xn分配段空间*/
+    }
+
+    /*etnry table偏移需要与sdk_link_base.xn, api.h保持一致*/
+    .entry ENTRY_ADDR :
+    {
+    	./obj/key_op_entry.o(.rodata)
+    	. = DRV_LED_ENTRY_OFFSET; /*KEY&IR&DEVICE DETECT : 16 API*/
+    	./obj/led_op_entry.o(.rodata)
+    	. = DRV_FM_ENTRY_OFFSET; /*LED : 16 API*/
+    	./obj/fm_op_entry.o(.rodata)
+    	. = DRV_FM_TX_ENTRY_OFFSET; /*FM : 10 API*/
+    	./obj/fm_tx_op_entry.o(.rodata)
+    	. = DRV_LCD_ENTRY_OFFSET; /*FM TX : 6 API*/
+    	./obj/lcd_op_entry.o(.rodata)
+    	. = DRV_RTC_ENTRY_OFFSET; /*LCD : 20 API*/
+    	./obj/ext_rtc_op_entry.o(.rodata)
+    	. = DRV_HDMI_ENTRY_OFFSET; /*EXT RTC : 16 API*/
+    	./obj/hdmi_init.o(.rodata.op)
+    	./obj/hdmi_op_entry.o(.rodata)
+    	. = DRV_END_ENTRY_OFFSET; /*HDMI : 12 API*/
+    }
+
+    .text :
+    {
+        */obj/*.o(.text .rodata .rcode) 
+        ./hdmi/hdmi.a(.text .rodata .rcode)
+    }    
+
+	.BSS_LCD_CACHE RDATA_LCD_CACHE_ADDR	:
+	{
+		_rd_lcd_data_start = ABSOLUTE(.);
+		*/obj/Hdrv_HardLogical.o(.bss.DisplayBuffer)
+		*/obj/Hdrv*.o(.bss)
+		*/obj/sdrv*.o(.bss)
+		_rd_lcd_data_end = ABSOLUTE(.);
+	}
+       
+    .data RDATA_DATA_ADDR   : 
+    {
+        _rd_data_start = ABSOLUTE(.); /*NOTE!!不能去掉这一行，否则如果.data段为空，可能会导致.bss段连接地址错误*/
+        */obj/*.o(.data)
+        ./hdmi/hdmi.a(.data)
+    }    
+        
+    .bss    : 
+    {
+    	*/obj/*.o(.bss)
+        ./hdmi/hdmi.a(.bss)
+        *(.bss)
+        *(.sbss)
+        *(.common)
+        *(common)
+        . = DATA_SIZE_RESERVE_4BYTES - SIZEOF(.data);
+    }
+}
